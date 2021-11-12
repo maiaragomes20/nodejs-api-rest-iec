@@ -6,7 +6,37 @@ const pool = new Pool({
     password: 'iec',
     port: 5432,
 })
+const getEstadoRS = (request, response) => {
+    const mes = parseInt(request.params.id)
+    const ano = parseInt(request.params.id_one)
+    pool.query('SELECT rio_grande_do_sul, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes, ano], (error, results) => {
+         if(error){
+            throw error
+                }
+    response.status(200).json(results.rows)
+    })
+}
 
+const getEstadoSC = (request, response) => {
+     const mes = parseInt(request.params.id)
+    const ano = parseInt(request.params.id_one)
+    pool.query('SELECT santa_catarina, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes,ano], (error, results) => {
+        if(error){
+            throw error
+                }
+    response.status(200).json(results.rows)
+    })
+}
+const getEstadoPR = (request, response) => {
+     const mes = parseInt(request.params.id)
+    const ano = parseInt(request.params.id_one)
+    pool.query('SELECT parana, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes, ano], (error, results) => {
+        if(error){
+            throw error
+                }
+    response.status(200).json(results.rows)
+    })
+}
 const getUsuario = (request, response) => {
     pool.query('SELECT * FROM usuario ORDER BY id_usuario ASC', (error, results) => {
         if(error){
@@ -64,6 +94,9 @@ const deleteUsuario = (request, response) => {
     })
 }
 module.exports = {
+    getEstadoPR,
+    getEstadoRS,
+    getEstadoSC,
     getUsuario,
     getUsuarioById,
     createUsuario,
