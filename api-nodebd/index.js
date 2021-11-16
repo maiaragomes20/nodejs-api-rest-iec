@@ -1,15 +1,15 @@
 const customExpress = require('./config/customExpress')
 const conexao = require('./infraestrutura/conexao')
-const Tabelas = require('./infraestrutura/tabelas')
-
-Tabelas.init(conexao)
 
 const app = customExpress()
 
 app.get('/usuario', conexao.getUsuario)
-app.get('/pr/:id/:id_one', conexao.getEstadoPR)
-app.get('/sc/:id/:id_one', conexao.getEstadoSC)
-app.get('/rs/:id/:id_one', conexao.getEstadoRS)
+app.get('/pr/:id/:id_one', conexao.getValorPR)
+app.get('/sc/:id/:id_one', conexao.getValorSC)
+app.get('/rs/:id/:id_one', conexao.getValorRS)
+app.get('/rs', conexao.getEstadoRS)
+app.get('/sc', conexao.getEstadoSC)
+app.get('/pr', conexao.getEstadoPR)
 app.get('/usuario/:id', conexao.getUsuarioById)
 app.post('/usuario', conexao.createUsuario)
 app.put('/usuario/:id', conexao.updateUsuario)
@@ -21,8 +21,6 @@ app.get('/', function(req,res){
 
 
 app.listen(3000, () => console.log('servidor rodando na porta 3000'))
-            
-
 
 
 
