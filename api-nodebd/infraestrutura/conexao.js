@@ -6,7 +6,7 @@ const pool = new Pool({
     password: 'iec',
     port: 5432,
 })
-const getEstadoRS = (request, response) => {
+const getValorRS = (request, response) => {
     const mes = parseInt(request.params.id)
     const ano = parseInt(request.params.id_one)
     pool.query('SELECT rio_grande_do_sul, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes, ano], (error, results) => {
@@ -17,7 +17,7 @@ const getEstadoRS = (request, response) => {
     })
 }
 
-const getEstadoSC = (request, response) => {
+const getValorSC = (request, response) => {
      const mes = parseInt(request.params.id)
     const ano = parseInt(request.params.id_one)
     pool.query('SELECT santa_catarina, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes,ano], (error, results) => {
@@ -27,11 +27,38 @@ const getEstadoSC = (request, response) => {
     response.status(200).json(results.rows)
     })
 }
-const getEstadoPR = (request, response) => {
+const getValorPR = (request, response) => {
      const mes = parseInt(request.params.id)
     const ano = parseInt(request.params.id_one)
     pool.query('SELECT parana, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes, ano], (error, results) => {
         if(error){
+            throw error
+                }
+    response.status(200).json(results.rows)
+    })
+}
+
+const getEstadoRS = (request, response) => {
+    pool.query('SELECT DISTINCT ano FROM precos_boigordo ORDER BY ano DESC', (error, results) => {
+         if(error){
+            throw error
+                }
+    response.status(200).json(results.rows)
+    })
+}
+
+const getEstadoSC = (request, response) => {
+    pool.query('SELECT DISTINCT ano FROM precos_boigordo ORDER BY ano DESC', (error, results) => {
+         if(error){
+            throw error
+                }
+    response.status(200).json(results.rows)
+    })
+}
+
+const getEstadoPR = (request, response) => {
+    pool.query('SELECT DISTINCT ano FROM precos_boigordo ORDER BY ano DESC', (error, results) => {
+         if(error){
             throw error
                 }
     response.status(200).json(results.rows)
@@ -94,6 +121,9 @@ const deleteUsuario = (request, response) => {
     })
 }
 module.exports = {
+    getValorRS,
+    getValorSC,
+    getValorPR,
     getEstadoPR,
     getEstadoRS,
     getEstadoSC,
