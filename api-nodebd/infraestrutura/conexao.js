@@ -6,10 +6,11 @@ const pool = new Pool({
     password: 'iec',
     port: 5432,
 })
-const getValorRS = (request, response) => {
+const getValor = (request, response) => {
     const mes = parseInt(request.params.id)
     const ano = parseInt(request.params.id_one)
-    pool.query('SELECT rio_grande_do_sul, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes, ano], (error, results) => {
+    const uf = (request.params.id_two)
+    pool.query('SELECT cotacao FROM precos_boigordo WHERE mes = $1 AND ano = $2 AND uf = $3', [mes, ano, uf], (error, results) => {
          if(error){
             throw error
                 }
@@ -17,28 +18,8 @@ const getValorRS = (request, response) => {
     })
 }
 
-const getValorSC = (request, response) => {
-     const mes = parseInt(request.params.id)
-    const ano = parseInt(request.params.id_one)
-    pool.query('SELECT santa_catarina, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes,ano], (error, results) => {
-        if(error){
-            throw error
-                }
-    response.status(200).json(results.rows)
-    })
-}
-const getValorPR = (request, response) => {
-     const mes = parseInt(request.params.id)
-    const ano = parseInt(request.params.id_one)
-    pool.query('SELECT parana, mes, ano FROM precos_boigordo WHERE mes = $1 AND ano = $2', [mes, ano], (error, results) => {
-        if(error){
-            throw error
-                }
-    response.status(200).json(results.rows)
-    })
-}
 
-const getEstadoRS = (request, response) => {
+const getAno = (request, response) => {
     pool.query('SELECT DISTINCT ano FROM precos_boigordo ORDER BY ano DESC', (error, results) => {
          if(error){
             throw error
@@ -47,7 +28,7 @@ const getEstadoRS = (request, response) => {
     })
 }
 
-const getEstadoSC = (request, response) => {
+/*const getEstadoSC = (request, response) => {
     pool.query('SELECT DISTINCT ano FROM precos_boigordo ORDER BY ano DESC', (error, results) => {
          if(error){
             throw error
@@ -63,7 +44,7 @@ const getEstadoPR = (request, response) => {
                 }
     response.status(200).json(results.rows)
     })
-}
+}*/
 const getUsuario = (request, response) => {
     pool.query('SELECT * FROM usuario ORDER BY id_usuario ASC', (error, results) => {
         if(error){
@@ -73,10 +54,10 @@ const getUsuario = (request, response) => {
     })
 }
 
-const getUsuarioById = (request, response) => {
-    const id = parseInt(request.params.id)
+const getUsuarioByName = (request, response) => {
+    const nome = (request.params.id)
 
-    pool.query('SELECT * FROM usuario WHERE id_usuario = $1', [id], (error, results) => {
+    pool.query('SELECT * FROM usuario WHERE nome = $1', [nome], (error, results) => {
         if(error){
             throw error
             }
@@ -85,16 +66,15 @@ const getUsuarioById = (request, response) => {
 }
 
 const createUsuario = (request, response) => {
-    const { nome, email } = request.body
+    const { nome, email, senha } = request.body
 
-    pool.query('INSERT INTO usuario (nome, email) VALUES ($1, $2)', [nome, email], (error, results) => {
+    pool.query('INSERT INTO usuario (nome, email, senha) VALUES ($1, $2, $3)', [nome, email, senha], (error, results) => {
         if(error){
             throw error
             }
-    response.status(201).send('User added with ID: ${result.insertId}')
+    response.status(201).send('User added with ID: ')
     })
 }
-
 const updateUsuario = (request, response) => {
     const id_usuario = parseInt(request.params.id)
     const { nome, email } = request.body
@@ -121,14 +101,10 @@ const deleteUsuario = (request, response) => {
     })
 }
 module.exports = {
-    getValorRS,
-    getValorSC,
-    getValorPR,
-    getEstadoPR,
-    getEstadoRS,
-    getEstadoSC,
+    getValor,
+    getAno,
     getUsuario,
-    getUsuarioById,
+    getUsuarioByName,
     createUsuario,
     updateUsuario,
     deleteUsuario,
